@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindCare - AI Mental Health Companion</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <div class="logo">🧠 MindCare</div>
+            <div class="nav-links">
+                <button class="nav-btn active" onclick="MindCare.showPage('dashboard', this)">Dashboard</button>
+                <button class="nav-btn" onclick="MindCare.showPage('chat', this)">AI Chat</button>
+                <button class="nav-btn" onclick="MindCare.showPage('mental-health', this)">Mental Health</button>
+                <button class="nav-btn" onclick="MindCare.showPage('exercises', this)">Exercises</button>
+                <button class="nav-btn" onclick="MindCare.showPage('workout', this)">Daily Plan</button>
+                <button class="nav-btn" onclick="MindCare.showPage('history', this)">History</button>
+                <button class="nav-btn" onclick="MindCare.showPage('profile', this)">Profile</button>
+                <button class="nav-btn" onclick="MindCare.showPage('settings', this)">Settings</button>
+            </div>
+        </nav>
+
+        <div id="dashboard" class="page active">
+            <div class="dashboard-header">
+                <h1 id="dynamic-greeting">Welcome Back, <span id="dashboard-username">Alex</span>! 👋</h1>
+                <p id="daily-quote" class="daily-quote">"The best way to predict the future is to create it."</p>
+            </div>
+        
+            <div class="dashboard-grid">
+                <div class="dashboard-main-content">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">😊</div>
+                            <div>
+                                <div class="stat-label">Current Mood</div>
+                                <div class="stat-value">Happy</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🔥</div>
+                            <div>
+                                <div class="stat-label">Streak Days</div>
+                                <div class="stat-value">7</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">✅</div>
+                            <div>
+                                <div class="stat-label">Sessions Done</div>
+                                <div class="stat-value">24</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                             <div class="stat-icon">⭐</div>
+                            <div>
+                                <div class="stat-label">Wellness Score</div>
+                                <div class="stat-value">85%</div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="content-card">
+                        <h2>Quick Actions</h2>
+                        <div class="exercise-grid">
+                            <div class="exercise-card" onclick="MindCare.showPage('chat', document.querySelector('.nav-btn[onclick*=\'chat\']'))">
+                                <h3>💬 Start a Conversation</h3>
+                                <p>Talk to your AI companion about how you're feeling today.</p>
+                            </div>
+                            <div class="exercise-card" onclick="MindCare.startBreathing()">
+                                <h3>🫁 5-Min Breathing</h3>
+                                <p>Take a moment to center yourself with a guided breathing session.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="dashboard-sidebar">
+                    <div class="content-card" id="dashboard-plan-card">
+                        <h2>Today's Plan</h2>
+                        <div id="dashboard-plan-content">
+                            <p>Loading your plan for today...</p>
+                        </div>
+                        <button class="btn" style="width: 100%; margin-top: 20px;" onclick="MindCare.showPage('workout', document.querySelector('.nav-btn[onclick*=\'workout\']'))">View Full Plan</button>
+                    </div>
+                    
+                    <div class="content-card">
+                        <h2>Journal Prompt</h2>
+                        <p id="journal-prompt" style="color: var(--text-light); font-style: italic; margin-bottom: 20px;">What's one small thing that brought you joy today?</p>
+                        <button class="btn" style="width: 100%;" onclick="MindCare.showPage('chat', document.querySelector('.nav-btn[onclick*=\'chat\']'))">Write in Chat</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="chat" class="page">
+            <div class="content-card">
+                <h1>Chat with AI Companion 💭</h1>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message ai">
+                            Hello! I'm your AI mental health companion. I'm here to listen and support you. How are you feeling today?
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="MindCare.handleKeyPress(event)">
+                        <button class="send-btn" onclick="MindCare.sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="mental-health" class="page">
+            <div class="content-card">
+                <h1>Mental Health Tracker 🧠</h1>
+                
+                <h2>How are you feeling today?</h2>
+                <div class="mood-selector">
+                    <button class="mood-btn" onclick="MindCare.selectMood(this, 'Great')" title="Great">😄</button>
+                    <button class="mood-btn" onclick="MindCare.selectMood(this, 'Good')" title="Good">😊</button>
+                    <button class="mood-btn" onclick="MindCare.selectMood(this, 'Okay')" title="Okay">😐</button>
+                    <button class="mood-btn" onclick="MindCare.selectMood(this, 'Not Good')" title="Not Good">😔</button>
+                    <button class="mood-btn" onclick="MindCare.selectMood(this, 'Terrible')" title="Terrible">😢</button>
+                </div>
+
+                <div id="moodResponse" style="margin-top: 20px; padding: 20px; background: var(--bg-light); border-radius: 10px; display: none; transition: all 0.3s;">
+                    <h3 id="moodResponseTitle"></h3>
+                    <p id="moodResponseText"></p>
+                </div>
+
+                <h2 style="margin-top: 40px;">Common Mental Health Issues</h2>
+                <div class="exercise-grid">
+                    <div class="exercise-card">
+                        <h3>😰 Anxiety</h3>
+                        <p>Feeling nervous, restless, or tense? Learn breathing techniques and grounding exercises to manage anxiety symptoms.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="MindCare.showPage('exercises', document.querySelector('.nav-btn[onclick*=\'exercises\']'))">View Exercises</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h3>😔 Depression</h3>
+                        <p>Experiencing persistent sadness or loss of interest? Discover mood-lifting activities and positive affirmations.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="MindCare.showPage('exercises', document.querySelector('.nav-btn[onclick*=\'exercises\']'))">View Exercises</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h3>😣 Stress</h3>
+                        <p>Feeling overwhelmed? Practice stress-reduction techniques including meditation and progressive muscle relaxation.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="MindCare.showPage('exercises', document.querySelector('.nav-btn[onclick*=\'exercises\']'))">View Exercises</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h3>😴 Sleep Issues</h3>
+                        <p>Trouble sleeping? Try our guided sleep meditations and learn healthy sleep hygiene habits.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="MindCare.showPage('exercises', document.querySelector('.nav-btn[onclick*=\'exercises\']'))">View Exercises</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="exercises" class="page">
+            <div class="content-card">
+                <h1>Relaxation Exercises 🧘</h1>
+                <p style="color: var(--text-light); margin-bottom: 30px;">Practice these exercises to improve your mental wellbeing</p>
+
+                <div class="exercise-grid">
+                    <div class="exercise-card">
+                        <h3>🫁 Deep Breathing (4-7-8)</h3>
+                        <p>Inhale for 4 seconds, hold for 7 seconds, exhale for 8 seconds. Repeat 4 times to activate your parasympathetic nervous system and reduce stress.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="MindCare.startBreathing()">Start Exercise</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h3>🧘 Progressive Muscle Relaxation</h3>
+                        <p>Tense and relax each muscle group from toes to head. Hold tension for 5 seconds, then release. Notice the difference between tension and relaxation.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="alert('Starting Progressive Muscle Relaxation...')">Start Exercise</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h3>🎵 Music Therapy</h3>
+                        <p>Listen to calming music (60-80 BPM). Classical, nature sounds, or ambient music can lower cortisol levels and improve mood.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="alert('Playing calming music...')">Play Music</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h3>📝 Journaling</h3>
+                        <p>Write your thoughts and feelings for 10-15 minutes. Express emotions freely without judgment to gain clarity and reduce anxiety.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="alert('Opening your journal...')">Open Journal</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h3>🧘‍♀ Guided Meditation</h3>
+                        <p>Follow a 10-minute guided meditation focusing on mindfulness and present moment awareness. Reduces stress and improves emotional regulation.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="alert('Starting Guided Meditation...')">Start Meditation</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h3>🌟 5-4-3-2-1 Grounding</h3>
+                        <p>Identify 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 you taste. Brings awareness to the present moment during anxiety.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="alert('Starting 5-4-3-2-1 Grounding exercise...')">Start Exercise</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h3>🙏 Gratitude Practice</h3>
+                        <p>List 3 things you're grateful for today. Regular gratitude practice increases happiness and reduces depressive symptoms.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="alert('Opening Gratitude Journal...')">Write Gratitude</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h3>🚶 Walking Meditation</h3>
+                        <p>Take a mindful walk focusing on each step, your breath, and surroundings. Combines physical movement with mental clarity.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="alert('Starting Walking Meditation...')">Start Walking</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h3>🎨 Art Therapy</h3>
+                        <p>Express emotions through drawing, coloring, or painting. No artistic skill needed - focus on the process, not the product.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="alert('Opening digital canvas...')">Open Canvas</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="workout" class="page">
+            <div class="content-card">
+                <h1>7-Day Wellness Plan 📅</h1>
+                <p style="color: var(--text-light); margin-bottom: 30px;">A comprehensive daily routine for mental and physical health. Check off tasks as you complete them!</p>
+        
+                <div class="day-selector" id="daySelector">
+                    </div>
+        
+                <div class="plan-content" id="planContent">
+                    </div>
+            </div>
+        </div>
+        
+        <div id="history" class="page">
+            <div class="content-card">
+                <h1>Your Wellness Journey 📜</h1>
+                <p style="color: var(--text-light); margin-bottom: 30px;">Review your logged moods, completed exercises, and chat sessions.</p>
+
+                <div class="history-filters">
+                    <button class="filter-btn active" onclick="MindCare.filterHistory('all', this)">All</button>
+                    <button class="filter-btn" onclick="MindCare.filterHistory('mood', this)">Mood Entries</button>
+                    <button class="filter-btn" onclick="MindCare.filterHistory('session', this)">AI Sessions</button>
+                    <button class="filter-btn" onclick="MindCare.filterHistory('exercise', this)">Exercises</button>
+                </div>
+
+                <div class="history-log" id="historyLog">
+                    <div class="history-item" data-category="mood">
+                        <div class="history-icon">😔</div>
+                        <div class="history-details">
+                            <p><strong>Mood Logged:</strong> Not Good</p>
+                            <p class="history-timestamp">October 3, 2025 - 8:30 PM</p>
+                        </div>
+                    </div>
+                    <div class="history-item" data-category="exercise">
+                        <div class="history-icon">🎨</div>
+                        <div class="history-details">
+                            <p><strong>Exercise Completed:</strong> Art Therapy</p>
+                            <p class="history-timestamp">October 2, 2025 - 7:15 PM</p>
+                        </div>
+                    </div>
+                    <div class="history-item" data-category="session">
+                        <div class="history-icon">💬</div>
+                        <div class="history-details">
+                            <p><strong>AI Chat Session</strong></p>
+                            <p class="history-timestamp">October 2, 2025 - 9:10 AM</p>
+                        </div>
+                    </div>
+                    <div class="history-item" data-category="mood">
+                        <div class="history-icon">😊</div>
+                        <div class="history-details">
+                            <p><strong>Mood Logged:</strong> Good</p>
+                            <p class="history-timestamp">October 2, 2025 - 9:00 AM</p>
+                        </div>
+                    </div>
+                    <div class="history-item" data-category="exercise">
+                        <div class="history-icon">🫁</div>
+                        <div class="history-details">
+                            <p><strong>Exercise Completed:</strong> Deep Breathing</p>
+                            <p class="history-timestamp">October 1, 2025 - 8:05 PM</p>
+                        </div>
+                    </div>
+                    <div class="history-item" data-category="mood">
+                        <div class="history-icon">😐</div>
+                        <div class="history-details">
+                            <p><strong>Mood Logged:</strong> Okay</p>
+                            <p class="history-timestamp">October 1, 2025 - 1:20 PM</p>
+                        </div>
+                    </div>
+                    <div class="history-item" data-category="session">
+                        <div class="history-icon">💬</div>
+                        <div class="history-details">
+                            <p><strong>AI Chat Session</strong></p>
+                            <p class="history-timestamp">September 30, 2025 - 10:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="profile" class="page">
+             <div class="content-card">
+                 <h1>Your Wellness Profile ✨</h1>
+                 <div class="profile-grid">
+                        <div class="profile-left-column">
+                            <div class="profile-card profile-main">
+                                <div class="profile-avatar-wrapper" onclick="MindCare.openModal('avatarModal')">
+                                    <div class="profile-avatar" id="profileAvatar">A</div>
+                                </div>
+                                <div class="editable-container">
+                                    <h2 id="profile-name-container"><span id="profile-name">Alex Doe</span></h2>
+                                    <span class="edit-icon" onclick="MindCare.toggleEdit('profile-name')">✏</span>
+                                </div>
+                                <div class="editable-container">
+                                    <p id="profile-status-container"><span id="profile-status">"Striving for balance and peace."</span></p>
+                                    <span class="edit-icon" onclick="MindCare.toggleEdit('profile-status')">✏</span>
+                                </div>
+                            </div>
+                            <div class="profile-card">
+                                 <h3>My Wellness Goals</h3>
+                                 <ul class="goal-list" id="goalList">
+                                 </ul>
+                                 <div class="goal-input-container">
+                                     <input type="text" id="newGoalInput" class="editable-input" placeholder="Add a new goal...">
+                                     <button id="addGoalBtn" onclick="MindCare.addGoal()">Add</button>
+                                 </div>
+                            </div>
+                        </div>
+                        <div class="profile-right-column">
+                             <div class="profile-card">
+                                 <h3>Statistics</h3>
+                                 <div class="profile-stats">
+                                     <div class="stat-item">
+                                         <div class="icon">🔥</div>
+                                         <div class="value">7 Days</div>
+                                         <div class="label">Current Streak</div>
+                                     </div>
+                                     <div class="stat-item">
+                                         <div class="icon">✅</div>
+                                         <div class="value">24</div>
+                                         <div class="label">Sessions Done</div>
+                                     </div>
+                                     <div class="stat-item">
+                                         <div class="icon">⭐</div>
+                                         <div class="value">85%</div>
+                                         <div class="label">Wellness Score</div>
+                                     </div>
+                                     <div class="stat-item">
+                                         <div class="icon">📅</div>
+                                         <div class="value">Jul 2025</div>
+                                         <div class="label">Member Since</div>
+                                     </div>
+                                 </div>
+                             </div>
+                             <div class="profile-card">
+                                 <h3>Mood Trend (Last 7 Days)</h3>
+                                 <div class="mood-chart-container">
+                                     <div class="mood-chart-bar"><div style="height: 80%;"></div><span class="label">Mon</span></div>
+                                     <div class="mood-chart-bar"><div style="height: 60%;"></div><span class="label">Tue</span></div>
+                                     <div class="mood-chart-bar"><div style="height: 70%;"></div><span class="label">Wed</span></div>
+                                     <div class="mood-chart-bar"><div style="height: 90%;"></div><span class="label">Thu</span></div>
+                                     <div class="mood-chart-bar"><div style="height: 50%;"></div><span class="label">Fri</span></div>
+                                     <div class="mood-chart-bar"><div style="height: 75%;"></div><span class="label">Sat</span></div>
+                                     <div class="mood-chart-bar"><div style="height: 85%;"></div><span class="label">Sun</span></div>
+                                 </div>
+                             </div>
+                             <div class="profile-card">
+                                 <h3>Achievements</h3>
+                                 <div class="achievements-grid">
+                                     <div class="achievement" title="Completed your first session!">
+                                         <div class="icon">🎉</div>
+                                         <div class="label">First Step</div>
+                                     </div>
+                                     <div class="achievement" title="Maintained a 7-day streak!">
+                                         <div class="icon">🔥</div>
+                                         <div class="label">On Fire</div>
+                                     </div>
+                                     <div class="achievement" title="Completed 10 meditation exercises">
+                                         <div class="icon">🧘</div>
+                                         <div class="label">Zen Master</div>
+                                     </div>
+                                     <div class="achievement locked" title="Log your mood for 30 days straight">
+                                         <div class="icon">📅</div>
+                                         <div class="label">Consistent</div>
+                                     </div>
+                                     <div class="achievement locked" title="Chat with the AI 25 times">
+                                         <div class="icon">💬</div>
+                                         <div class="label">Chatterbox</div>
+                                     </div>
+                                 </div>
+                             </div>
+                        </div>
+                 </div>
+             </div>
+        </div>
+
+        <div id="settings" class="page">
+            <div class="content-card">
+                <h1>Settings ⚙</h1>
+
+                <div class="settings-section">
+                    <h2>Appearance</h2>
+                    <div class="setting-item">
+                        <span>Dark Mode</span>
+                        <div id="darkModeToggle" class="toggle-switch"></div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2>Notifications</h2>
+                    <div class="setting-item">
+                        <span>Daily Reminders</span>
+                        <div class="toggle-switch active"></div>
+                    </div>
+                    <div class="setting-item">
+                        <span>Weekly Summary</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="setting-item">
+                        <span>Mood Check-ins</span>
+                        <div class="toggle-switch active"></div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2>Account</h2>
+                    <div class="setting-item">
+                        <a href="#" class="btn">Change Password</a>
+                        <a href="#" class="btn btn-danger">Delete Account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="emergency-btn" onclick="MindCare.openModal('emergencyModal')">🆘</button>
+
+    <div id="emergencyModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="MindCare.closeModal('emergencyModal')">&times;</button>
+            <h2>Emergency Contacts</h2>
+            <p style="color: var(--text-light);">If you are in a crisis, please reach out to a professional immediately.</p>
+            <div class="contact-list">
+                <div class="contact-item">
+                    <span>National Suicide Prevention Lifeline</span>
+                    <a href="tel:988" class="btn">Call 988</a>
+                </div>
+                <div class="contact-item">
+                    <span>Crisis Text Line</span>
+                    <a href="sms:741741" class="btn">Text HOME to 741741</a>
+                </div>
+                <div class="contact-item">
+                    <span>Your Emergency Contact</span>
+                    <a href="tel:123-456-7890" class="btn btn-secondary">Call Jane Doe</a>
+                </div>
+            </div>
+            <button class="btn btn-danger" onclick="MindCare.closeModal('emergencyModal')">I'm Okay, Close This</button>
+        </div>
+    </div>
+
+    <div id="breathingModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="MindCare.closeBreathingModal()">&times;</button>
+            <h2>Guided Breathing</h2>
+            <div class="breathing-circle">
+                <span id="breathingText">Get Ready...</span>
+            </div>
+            <div class="breathing-instruction" id="breathingInstruction">
+                Follow the animation to guide your breath.
+            </div>
+        </div>
+    </div>
+
+    <div id="avatarModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="MindCare.closeModal('avatarModal')">&times;</button>
+            <h2 style="color:var(--primary)">Choose Your Avatar</h2>
+            <div class="avatar-selector">
+                <span class="avatar-option" onclick="MindCare.selectAvatar('😊')">😊</span>
+                <span class="avatar-option" onclick="MindCare.selectAvatar('😎')">😎</span>
+                <span class="avatar-option" onclick="MindCare.selectAvatar('🧘')">🧘</span>
+                <span class="avatar-option" onclick="MindCare.selectAvatar('✨')">✨</span>
+                <span class="avatar-option" onclick="MindCare.selectAvatar('🚀')">🚀</span>
+                <span class="avatar-option" onclick="MindCare.selectAvatar('❤')">❤</span>
+                <span class="avatar-option" onclick="MindCare.selectAvatar('🧠')">🧠</span>
+                <span class="avatar-option" onclick="MindCare.selectAvatar('A')">A</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

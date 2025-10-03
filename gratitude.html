@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Daily Gratitude Practice</title>
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --accent:#f7c948; --muted:#9aa6b2; --glass: rgba(255,255,255,0.04);
+      font-synthesis: none;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background: linear-gradient(180deg,#071028 0%, #081428 60%); color:#e6eef6}
+    .container{max-width:900px;margin:40px auto;padding:28px}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .logo{width:62px;height:62px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ff8a5b);display:flex;align-items:center;justify-content:center;font-weight:700;color:#08202a;box-shadow:0 6px 18px rgba(0,0,0,0.5)}
+    h1{font-size:20px;margin:0}
+    p.lead{margin:4px 0 0;color:var(--muted);font-size:13px}
+
+    main{display:grid;grid-template-columns:1fr 360px;gap:18px}
+    @media (max-width:920px){main{grid-template-columns:1fr} .right{order:2}}
+
+    /* left - main practice card */
+    .card{background:linear-gradient(180deg,var(--card), rgba(255,255,255,0.02));border-radius:14px;padding:16px;box-shadow:0 6px 20px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+    form .row{display:flex;gap:12px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input[type='text'], textarea{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:var(--glass);color:inherit;outline:none;resize:vertical}
+    textarea{min-height:96px}
+    .actions{display:flex;gap:10px;align-items:center;margin-top:12px}
+    button{background:linear-gradient(180deg,var(--accent),#ffb36d);border:none;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:600}
+
+    /* gratitude list */
+    .entries{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+    .entry{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+    .entry .meta{font-size:12px;color:var(--muted)}
+    .entry .text{font-size:15px;line-height:1.35}
+    .entry .controls{display:flex;gap:8px}
+    .pill{background:rgba(0,0,0,0.25);padding:6px 8px;border-radius:999px;font-size:12px;color:var(--muted);border:1px solid rgba(255,255,255,0.02)}
+
+    /* right sidebar */
+    .right{display:flex;flex-direction:column;gap:12px}
+    .small{padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+    .streak{font-size:30px;font-weight:700;color:var(--accent);text-align:center}
+    .muted{color:var(--muted);font-size:13px}
+    .quote{font-style:italic;margin:6px 0}
+
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+
+    /* micro interactions */
+    .fade-in{animation:fadeIn .36s ease both}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    .empty{padding:18px;border-radius:10px;text-align:center;color:var(--muted);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border:1px dashed rgba(255,255,255,0.03)}
+
+    .sr-only{position:absolute;left:-9999px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">G</div>
+      <div>
+        <h1>Daily Gratitude Practice</h1>
+        <p class="lead">Spend 5 minutes listing what you're grateful for. Small practice, big results.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="card" aria-labelledby="practice-title">
+        <h2 id="practice-title" style="margin-top:0">Today’s Gratitude</h2>
+        <form id="gratitudeForm">
+          <div>
+            <label for="gratefulFor">What are you grateful for today?</label>
+            <textarea id="gratefulFor" placeholder="e.g. The warm sunlight during my walk, Mum's smile, finishing a problem..." required></textarea>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:10px">
+            <div style="flex:1">
+              <label for="mood">Your mood (optional)</label>
+              <input id="mood" type="text" placeholder="Peaceful, excited, thankful...">
+            </div>
+            <div style="width:140px">
+              <label for="timeSpent">Minutes spent</label>
+              <input id="timeSpent" type="text" inputmode="numeric" placeholder="5">
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="saveBtn" type="submit">Save entry</button>
+            <button id="quickBtn" type="button" class="ghost">Quick gratitude (auto)</button>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <button id="exportBtn" type="button" class="ghost">Export</button>
+              <button id="clearBtn" type="button" class="ghost">Clear all</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="entries" id="entriesList">
+          <!-- entries inserted here -->
+        </div>
+
+        <div id="emptyState" class="empty" style="margin-top:12px">No entries yet — start by adding something you're thankful for today.</div>
+      </section>
+
+      <aside class="right">
+        <div class="small">
+          <div class="muted">Current streak</div>
+          <div class="streak" id="streak">0</div>
+          <div class="muted" style="text-align:center">consecutive days you logged gratitude</div>
+        </div>
+
+        <div class="small">
+          <div class="muted">Quick tip</div>
+          <div style="margin-top:8px">Focus on specifics — one small sensory detail makes gratitude stick. e.g., 'the smell of cardamom tea' beats 'tea'.</div>
+        </div>
+
+        <div class="small">
+          <div class="muted">Daily quote</div>
+          <div class="quote" id="quote">"Gratitude turns what we have into enough." — Unknown</div>
+        </div>
+
+        <div class="small" style="text-align:center">
+          <div class="muted">Breathing pause</div>
+          <div style="margin:10px 0"><button id="breatheBtn" class="ghost">Start 1-min breathing</button></div>
+          <div class="muted" id="breathGuide">Ready</div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>Made with care — your entries stay only in your browser (localStorage).</footer>
+  </div>
+
+  <script>
+    // Simple gratitude app behaviour using localStorage
+    const form = document.getElementById('gratitudeForm');
+    const entriesList = document.getElementById('entriesList');
+    const emptyState = document.getElementById('emptyState');
+    const streakEl = document.getElementById('streak');
+    const quoteEl = document.getElementById('quote');
+
+    const LS_KEY = 'gratitude_entries_v1';
+
+    function uid(){return Math.random().toString(36).slice(2,9)}
+
+    function load(){
+      const raw = localStorage.getItem(LS_KEY);
+      try{
+        return raw? JSON.parse(raw) : []
+      }catch(e){return []}
+    }
+
+    function saveAll(entries){localStorage.setItem(LS_KEY, JSON.stringify(entries))}
+
+    function render(){
+      const entries = load();
+      entriesList.innerHTML='';
+      if(entries.length===0){emptyState.style.display='block'} else {emptyState.style.display='none'}
+      entries.slice().reverse().forEach(e=>{
+        const el = document.createElement('div'); el.className='entry fade-in';
+        el.innerHTML = `<div style="flex:1"><div class=meta><span class=pill>${new Date(e.created).toLocaleString()}</span> ${e.mood?('<span class=pill>'+e.mood+'</span>') : ''} ${e.timeSpent?('<span class=pill>'+e.timeSpent+'m</span>'):''}</div><div class=text>${escapeHtml(e.text)}</div></div><div class=controls><button class=ghost data-id="${e.id}" data-action="delete">Delete</button></div>`;
+        entriesList.appendChild(el);
+      })
+      updateStreak();
+    }
+
+    function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+    form.addEventListener('submit', (ev)=>{
+      ev.preventDefault();
+      const text = document.getElementById('gratefulFor').value.trim();
+      if(!text) return;
+      const mood = document.getElementById('mood').value.trim();
+      const timeSpent = document.getElementById('timeSpent').value.trim();
+      const entries = load();
+      entries.push({id:uid(), text, mood, timeSpent, created: new Date().toISOString()});
+      saveAll(entries);
+      form.reset();
+      render();
+    })
+
+    document.getElementById('quickBtn').addEventListener('click', ()=>{
+      const examples = [
+        'A warm cup of tea this morning',
+        'My friend checking in on me',
+        'Finishing a tricky exercise',
+        'A comfortable place to sleep',
+        'The sound of rain on the roof'
+      ];
+      const text = examples[Math.floor(Math.random()*examples.length)];
+      document.getElementById('gratefulFor').value = text;
+      document.getElementById('mood').value = 'content';
+      document.getElementById('timeSpent').value = '3';
+    })
+
+    entriesList.addEventListener('click', (ev)=>{
+      const btn = ev.target.closest('button');
+      if(!btn) return;
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      if(action==='delete'){
+        let entries = load();
+        entries = entries.filter(e=>e.id!==id);
+        saveAll(entries);
+        render();
+      }
+    })
+
+    document.getElementById('clearBtn').addEventListener('click', ()=>{
+      if(confirm('Clear all saved gratitude entries?')){ localStorage.removeItem(LS_KEY); render() }
+    })
+
+    document.getElementById('exportBtn').addEventListener('click', ()=>{
+      const entries = load();
+      if(entries.length===0){alert('No entries to export');return}
+      const content = entries.map(e=>`${new Date(e.created).toLocaleString()}\n${e.text}\nMood: ${e.mood|| '-'} | Minutes: ${e.timeSpent|| '-'}\n---`).join('\n');
+      const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='gratitude_entries.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    })
+
+    // simple streak calculation: consecutive days with at least one entry
+    function updateStreak(){
+      const entries = load();
+      if(entries.length===0){streakEl.textContent='0';return}
+      // build set of dates (yyyy-mm-dd)
+      const days = new Set(entries.map(e=>e.created.slice(0,10)));
+      // start from today and count backwards
+      let count = 0; const today = new Date();
+      for(let i=0;;i++){
+        const d = new Date(today); d.setDate(today.getDate()-i);
+        const key = d.toISOString().slice(0,10);
+        if(days.has(key)) count++; else break;
+      }
+      streakEl.textContent = ''+count;
+    }
+
+    // breathing guide (1 minute) simple text guidance
+    document.getElementById('breatheBtn').addEventListener('click', ()=>{
+      const guide = document.getElementById('breathGuide');
+      let step = 0; const steps = ['Breathe in (4s)','Hold (4s)','Breathe out (6s)'];
+      guide.textContent = steps[0];
+      const interval = setInterval(()=>{
+        step++;
+        if(step<steps.length) guide.textContent = steps[step]; else { clearInterval(interval); guide.textContent='Done — feel the calm'; setTimeout(()=>guide.textContent='Ready',1500)}
+      }, 4000);
+    })
+
+    // daily rotating quote from tiny list
+    const quotes = [
+      'Gratitude turns what we have into enough. — Anonymous',
+      'When you are grateful, fear disappears and abundance appears. — Tony Robbins',
+      'Gratitude is the fairest blossom which springs from the soul. — Henry Ward Beecher',
+      'Cultivate the habit of being grateful for every good thing that comes to you. — Ralph Waldo Emerson'
+    ];
+    (function pickQuote(){
+      const idx = new Date().getDate() % quotes.length; quoteEl.textContent = quotes[idx];
+    })();
+
+    // init
+    render();
+  </script>
+</body>
+</html>
