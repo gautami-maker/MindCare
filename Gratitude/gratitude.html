@@ -1,0 +1,94 @@
+<!--
+  Standalone Gratitude page
+  Planned integration:
+  MindCare → Exercises → Journaling → Gratitude
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Daily Gratitude Practice</title>
+  <link rel="stylesheet" href="gratitude.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">G</div>
+      <div>
+        <h1>Daily Gratitude Practice</h1>
+        <p class="lead">Spend 5 minutes listing what you're grateful for. Small practice, big results.</p>
+      </div>
+    </header>
+
+<!-- Main content: form + entries -->
+ 
+    <main>
+      <section class="card" aria-labelledby="practice-title">
+        <h2 id="practice-title" style="margin-top:0">Today’s Gratitude</h2>
+        <form id="gratitudeForm">
+          <div>
+            <label for="gratefulFor">What are you grateful for today?</label>
+            <textarea id="gratefulFor" placeholder="e.g. The warm sunlight during my walk, Mum's smile, finishing a problem..." required></textarea>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:10px">
+            <div style="flex:1">
+              <label for="mood">Your mood (optional)</label>
+              <input id="mood" type="text" placeholder="Peaceful, excited, thankful...">
+            </div>
+            <div style="width:140px">
+              <label for="timeSpent">Minutes spent</label>
+              <input id="timeSpent" type="text" inputmode="numeric" placeholder="5">
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="saveBtn" type="submit">Save entry</button>
+            <button id="quickBtn" type="button" class="ghost">Quick gratitude (auto)</button>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <button id="exportBtn" type="button" class="ghost">Export</button>
+              <button id="clearBtn" type="button" class="ghost">Clear all</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="entries" id="entriesList">
+          <!-- entries inserted here -->
+        </div>
+
+        <div id="emptyState" class="empty" style="margin-top:12px">No entries yet — start by adding something you're thankful for today.</div>
+      </section>
+
+<!-- Sidebar: streak, tips, quote -->
+
+      <aside class="right">
+        <div class="small">
+          <div class="muted">Current streak</div>
+          <div class="streak" id="streak">0</div>
+          <div class="muted" style="text-align:center">consecutive days you logged gratitude</div>
+        </div>
+
+        <div class="small">
+          <div class="muted">Quick tip</div>
+          <div style="margin-top:8px">Focus on specifics — one small sensory detail makes gratitude stick. e.g., 'the smell of cardamom tea' beats 'tea'.</div>
+        </div>
+
+        <div class="small">
+          <div class="muted">Daily quote</div>
+          <div class="quote" id="quote">"Gratitude turns what we have into enough." — Unknown</div>
+        </div>
+
+        <div class="small" style="text-align:center">
+          <div class="muted">Breathing pause</div>
+          <div style="margin:10px 0"><button id="breatheBtn" class="ghost">Start 1-min breathing</button></div>
+          <div class="muted" id="breathGuide">Ready</div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>Made with care — your entries stay only in your browser (localStorage).</footer>
+  </div>
+
+  <script src="gratitude.js"></script>
+</body>
+</html>
