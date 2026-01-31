@@ -1,3 +1,24 @@
+/* ============================================================
+   MindCare – Global Stylesheet
+   ------------------------------------------------------------
+   Purpose:
+   - Defines all visual styling for the MindCare frontend
+   - Paired closely with index.html + app.js
+   - Dark mode handled via body.dark-mode class (JS controlled)
+
+   ⚠️ IMPORTANT:
+   - Many styles rely on JS-added classes (e.g. .active, .completed)
+   - Do NOT remove selectors without checking app.js
+   ============================================================ */
+
+   /* ============================================================
+   1. CSS Reset & Global Design Tokens
+   ------------------------------------------------------------
+   - Reset default browser spacing
+   - Define color palette and reusable variables
+   - Variables are reused across all pages & dark mode
+   ============================================================ */
+
 * {
     margin: 0;
     padding: 0;
@@ -18,6 +39,15 @@
     --danger: #ef4444;
 }
 
+/* ============================================================
+   2. Base Page Layout
+   ------------------------------------------------------------
+   - Global font + background
+   - Gradient background for entire app
+   - Dark mode overrides via body.dark-mode
+   ============================================================ */
+
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -26,7 +56,14 @@ body {
     transition: background 0.3s ease-in-out;
 }
 
-/* --- Dark Mode Styles --- */
+/* ============================================================
+   3. Dark Mode Theme
+   ------------------------------------------------------------
+   - Activated via JS (body.dark-mode)
+   - Overrides CSS variables instead of rewriting rules
+   - Keeps component styles consistent
+   ============================================================ */
+
 body.dark-mode {
     --bg-light: #1e293b;
     --bg-white: #334155;
@@ -55,8 +92,14 @@ body.dark-mode .avatar-option,
 body.dark-mode .mood-chart-bar > div {
     background: var(--bg-white);
 }
-/* --- End Dark Mode Styles --- */
 
+/* ============================================================
+   4. App Container & Navigation Bar
+   ------------------------------------------------------------
+   - .container wraps the entire app
+   - nav is persistent across all pages
+   - .nav-btn.active controlled by JS navigation
+   ============================================================ */
 
 .container {
     max-width: 1400px;
@@ -94,6 +137,8 @@ nav {
     flex-wrap: wrap;
 }
 
+/* Active state toggled by MindCare.showPage() */
+
 .nav-btn {
     padding: 10px 20px;
     background: transparent;
@@ -110,7 +155,13 @@ nav {
     color: white;
 }
 
-/* Page Content */
+/* ============================================================
+   5. Page Routing System (Frontend Only)
+   ------------------------------------------------------------
+   - Each main screen is a .page
+   - JS toggles .active to simulate routing
+   ============================================================ */
+
 .page {
     display: none;
     animation: fadeIn 0.5s;
@@ -124,6 +175,13 @@ nav {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ============================================================
+   6. Reusable Card Components
+   ------------------------------------------------------------
+   - Used across dashboard, chat, profile, settings, etc.
+   - Visual consistency via .content-card
+   ============================================================ */
 
 .content-card {
     background: white;
@@ -152,7 +210,14 @@ h3 {
     font-size: 18px;
 }
 
-/* --- NEW & UPDATED Dashboard Styles --- */
+/* ============================================================
+   7. Dashboard (Home Overview)
+   ------------------------------------------------------------
+   - Greeting, stats, quick actions
+   - Sidebar shows today's plan + journal prompt
+   - Some content populated dynamically via JS
+   ============================================================ */
+
 .dashboard-header {
     margin-bottom: 30px;
 }
@@ -250,6 +315,8 @@ h3 {
     font-size: 14px;
     color: var(--text-dark);
 }
+/* Completion state controlled by Daily Plan JS */
+
 .dashboard-task-item.completed {
     opacity: 0.6;
     text-decoration: line-through;
@@ -257,9 +324,13 @@ h3 {
 .dashboard-task-item .icon {
     font-size: 20px;
 }
-/* --- END NEW Dashboard Styles --- */
+/* ============================================================
+   8. AI Chat Interface
+   ------------------------------------------------------------
+   - Message bubbles styled via .message.user / .message.ai
+   - Messages injected dynamically via JS
+   ============================================================ */
 
-/* Chat Interface */
 .chat-container {
     height: 500px;
     display: flex;
@@ -290,6 +361,7 @@ h3 {
     from { opacity: 0; transform: translateX(-20px); }
     to { opacity: 1; transform: translateX(0); }
 }
+/* User messages aligned right */
 
 .message.user {
     align-self: flex-end;
@@ -297,6 +369,8 @@ h3 {
     color: white;
     border-bottom-right-radius: 5px;
 }
+    
+/* AI messages aligned left */
 
 .message.ai {
     align-self: flex-start;
@@ -348,7 +422,13 @@ h3 {
     transform: scale(1.05);
 }
 
-/* Mood Tracker */
+/* ============================================================
+   9. Mood Tracker
+   ------------------------------------------------------------
+   - Emoji buttons
+   - .selected class toggled by JS
+   ============================================================ */
+
 .mood-selector {
     display: flex;
     justify-content: space-around;
@@ -383,7 +463,13 @@ h3 {
     transform: scale(1.1);
 }
     
-/* Exercises */
+/* ============================================================
+   10. Exercise Library
+   ------------------------------------------------------------
+   - Static cards
+   - Hover effects for affordance
+   ============================================================ */
+
 .exercise-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -414,7 +500,14 @@ h3 {
     line-height: 1.6;
 }
 
-/* --- UPDATED Interactive Workout Plan --- */
+/* ============================================================
+   11. Daily Wellness Plan (7-Day Program)
+   ------------------------------------------------------------
+   - Days and tasks generated entirely via JS
+   - .day-btn.active & .day-plan.active controlled by JS
+   - Progress bars reflect localStorage state
+   ============================================================ */
+
 .day-selector {
     display: flex;
     justify-content: center;
@@ -566,7 +659,13 @@ body.dark-mode .activity-duration {
     background: #475569;
 }
 
-/* History Page */
+/* ============================================================
+   12. Activity History
+   ------------------------------------------------------------
+   - Filter buttons toggle visibility
+   - No backend data (static + JS filtering)
+   ============================================================ */
+
 .history-filters {
     display: flex;
     gap: 10px;
@@ -634,7 +733,14 @@ body.dark-mode .activity-duration {
     margin-top: 4px;
 }
 
-/* --- Updated Profile Page Styles --- */
+/* ============================================================
+   13. User Profile
+   ------------------------------------------------------------
+   - Editable fields (name, status)
+   - Goals stored in localStorage
+   - Avatar picker via modal
+   ============================================================ */
+
 .profile-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -800,6 +906,9 @@ body.dark-mode .activity-duration {
 }
 .goal-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); }
 .goal-item label { flex: 1; color: var(--text-dark); }
+
+/* Goal completion handled in app.js */
+
 .goal-item.completed label { text-decoration: line-through; color: var(--text-light); }
 .goal-input-container {
     display: flex;
@@ -835,9 +944,14 @@ body.dark-mode .activity-duration {
     transform: scale(1.2);
     background-color: var(--bg-light);
 }
-/* --- End Profile Page Styles --- */
 
-/* Settings */
+/* ============================================================
+   14. Settings
+   ------------------------------------------------------------
+   - Dark mode toggle wired to JS
+   - Other toggles are visual-only (for now)
+   ============================================================ */
+
 .settings-section {
     margin-bottom: 30px;
 }
@@ -882,7 +996,13 @@ body.dark-mode .activity-duration {
     left: 33px;
 }
 
-/* Buttons */
+/* ============================================================
+   15. Global Buttons
+   ------------------------------------------------------------
+   - Primary, secondary, danger variants
+   - Used across entire app
+   ============================================================ */
+
 .btn {
     padding: 12px 30px;
     background: var(--primary);
@@ -919,7 +1039,13 @@ body.dark-mode .activity-duration {
     background: #dc2626;
 }
 
-/* Emergency Contact Button */
+/* ============================================================
+   16. Emergency Access & Modals
+   ------------------------------------------------------------
+   - Floating emergency button always visible
+   - Modals opened/closed via JS
+   ============================================================ */
+
 .emergency-btn {
     position: fixed;
     bottom: 30px;
@@ -945,7 +1071,8 @@ body.dark-mode .activity-duration {
     box-shadow: 0 8px 30px rgba(239, 68, 68, 0.6);
 }
 
-/* Modal */
+/* Generic modal overlay (shared by all modals) */
+
 .modal {
     display: none;
     position: fixed;
@@ -1011,7 +1138,13 @@ body.dark-mode .activity-duration {
     align-items: center;
 }
 
-/* Breathing Exercise */
+/* ============================================================
+   17. Guided Breathing Animation
+   ------------------------------------------------------------
+   - CSS animation synced with JS instructions
+   - Timing must match JS intervals
+   ============================================================ */
+
 .breathing-circle {
     width: 200px;
     height: 200px;
@@ -1042,7 +1175,14 @@ body.dark-mode .activity-duration {
     height: 30px;
 }
 
-/* Responsive */
+/* ============================================================
+   18. Responsive Adjustments
+   ------------------------------------------------------------
+   - Tablet & mobile layout fixes
+   - Navigation collapses naturally (no JS)
+   ============================================================ */
+
+
 @media (max-width: 1024px) {
     .dashboard-grid {
         grid-template-columns: 1fr;
