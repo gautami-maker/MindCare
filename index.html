@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    
     <div class="container">
+
+<!-- App navigation (JS-based, no real routing) -->
+
         <nav>
             <div class="logo">🧠 MindCare</div>
             <div class="nav-links">
@@ -21,6 +25,10 @@
                 <button class="nav-btn" onclick="MindCare.showPage('settings', this)">Settings</button>
             </div>
         </nav>
+
+<!-- Dashboard
+     Summary view with placeholder user data
+-->
 
         <div id="dashboard" class="page active">
             <div class="dashboard-header">
@@ -94,6 +102,10 @@
             </div>
         </div>
 
+<!-- AI Chat
+     Chat UI with fake / static responses
+-->
+
         <div id="chat" class="page">
             <div class="content-card">
                 <h1>Chat with AI Companion 💭</h1>
@@ -110,6 +122,10 @@
                 </div>
             </div>
         </div>
+
+<!-- Mental Health Tracker
+     Frontend-only mood selection
+-->
 
         <div id="mental-health" class="page">
             <div class="content-card">
@@ -154,6 +170,10 @@
                 </div>
             </div>
         </div>
+
+<!-- Exercises Library
+     Static wellness activities
+-->
 
         <div id="exercises" class="page">
             <div class="content-card">
@@ -210,6 +230,10 @@
             </div>
         </div>
 
+<!-- Daily Wellness Plan
+     Content generated via JavaScript
+-->
+
         <div id="workout" class="page">
             <div class="content-card">
                 <h1>7-Day Wellness Plan 📅</h1>
@@ -222,7 +246,12 @@
                     </div>
             </div>
         </div>
-        
+
+
+<!-- Activity History
+     Placeholder entries only
+-->
+
         <div id="history" class="page">
             <div class="content-card">
                 <h1>Your Wellness Journey 📜</h1>
@@ -288,6 +317,10 @@
                 </div>
             </div>
         </div>
+
+        <!-- User Profile
+      Local / mock user data
+        -->
 
         <div id="profile" class="page">
              <div class="content-card">
@@ -385,6 +418,10 @@
              </div>
         </div>
 
+<!-- Settings
+     Dark mode works, others are visual only
+-->
+
         <div id="settings" class="page">
             <div class="content-card">
                 <h1>Settings ⚙</h1>
@@ -423,7 +460,8 @@
             </div>
         </div>
     </div>
-
+    
+<!-- Modals (emergency, breathing, avatar) -->
     <button class="emergency-btn" onclick="MindCare.openModal('emergencyModal')">🆘</button>
 
     <div id="emergencyModal" class="modal">
