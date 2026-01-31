@@ -1,6 +1,34 @@
+/* ============================================================
+   MindCare – Frontend Application Controller (app.js)
+   ------------------------------------------------------------
+   Purpose:
+   - Handles all interactivity for the MindCare web app
+   - No backend or API calls (fully client-side)
+   - Uses DOM manipulation + localStorage for persistence
+
+   Architecture:
+   - Single IIFE module exposing a public API (MindCare)
+   - Feature-based organization (Chat, Mood, Plan, Profile, etc.)
+   - CSS behavior heavily depends on JS-added classes
+
+   ⚠️ IMPORTANT:
+   - Many UI states rely on CSS classes like:
+     .active, .completed, .selected, .dark-mode
+   - Changing class names will break styles
+   ============================================================ */
+
+
 // Wrap all code in an IIFE to keep the global scope clean and expose functions via a single object.
+
 const MindCare = (() => {
-    // --- Shared Variables ---
+/* ============================================================
+   1. Shared Application State (In-Memory Store)
+   ------------------------------------------------------------
+   - Acts like a simple frontend state manager
+   - Synced manually with localStorage where needed
+   - Reset on page refresh unless persisted
+   ============================================================ */
+
     let breathingInterval;
     let planData, completionStatus, daysOfWeek, todayName;
     let goals = []; // Goals data structure
@@ -12,6 +40,13 @@ const MindCare = (() => {
     const newGoalInput = document.getElementById('newGoalInput');
     const daySelector = document.getElementById('daySelector');
     const planContent = document.getElementById('planContent');
+/* ============================================================
+   3. Static Content & Mock Data
+   ------------------------------------------------------------
+   - Placeholder AI responses (no real AI backend)
+   - Mood feedback content
+   ============================================================ */
+
 
     const aiResponses = [
         "Thank you for sharing. Can you tell me more about that?",
@@ -30,7 +65,14 @@ const MindCare = (() => {
         'Terrible': { title: "I'm here for you. 😢", text: 'It sounds like you\'re having a very tough time. Please be gentle with yourself. If you are in crisis, use the emergency button.' }
     };
     
-    // Wellness Plan Data
+    /* ============================================================
+   4. Weekly Wellness Plan (Configuration)
+   ------------------------------------------------------------
+   - Defines tasks for each day
+   - Used by both Dashboard & Daily Plan pages
+   - Completion state stored separately
+   ============================================================ */
+
     planData = {
         monday: { title: "Fresh Start Monday", tasks: [ { icon: '🧘', text: 'Morning meditation', duration: '10 min' }, { icon: '✍', text: 'Gratitude journaling', duration: '5 min' }, { icon: '🤸', text: 'Light yoga or stretching', duration: '15 min' }, { icon: '🫁', text: 'Evening breathing exercises', duration: '5 min' } ] },
         tuesday: { title: "Mindful Movement Tuesday", tasks: [ { icon: '🚶', text: '20-minute walk in nature', duration: '20 min' }, { icon: '🧘', text: 'Body scan meditation', duration: '15 min' }, { icon: '🎨', text: 'Creative expression (art/music)', duration: '20 min' }, { icon: '🤔', text: 'Evening reflection', duration: '5 min' } ] },
@@ -40,13 +82,18 @@ const MindCare = (() => {
         saturday: { title: "Joyful Saturday", tasks: [ { icon: '🌳', text: 'Spend time outdoors', duration: '30 min' }, { icon: '😂', text: 'Watch a funny movie or show', duration: 'Varies' }, { icon: '🕹', text: 'Engage in a favorite hobby', duration: '45 min' }, { icon: '📵', text: 'Digital detox for 1 hour', duration: '60 min' } ] },
         sunday: { title: "Restful Sunday", tasks: [ { icon: '🛌', text: 'Sleep in or take a nap', duration: 'Varies' }, { icon: '🗓', text: 'Plan for the week ahead', duration: '15 min' }, { icon: '🛁', text: 'Take a relaxing bath', duration: '20 min' }, { icon: '😌', text: 'Mindful listening practice', duration: '10 min' } ] }
     };
+    // Utility for mapping JS Date -> planData keys
     daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
     todayName = daysOfWeek[new Date().getDay()]; // 0 for Sunday, 1 for Monday...
 
 
-    // --- Core Functions (Exposed) ---
 
-    // Page Navigation
+/* ============================================================
+   5. Page Navigation (Frontend Routing)
+   ------------------------------------------------------------
+   - Simulates page routing using .page + .active
+   - Navigation buttons also updated here
+   ============================================================ */
     function showPage(pageId, navButton) {
         document.querySelectorAll('.page').forEach(page => {
             page.classList.remove('active');
@@ -60,13 +107,18 @@ const MindCare = (() => {
             navButton.classList.add('active');
         }
         
-        // Specific logic for Workout/Daily Plan page
+// Ensure Daily Plan defaults to today
         if (pageId === 'workout') {
             switchDay(todayName); // Ensure today's plan is shown when navigating to the Daily Plan page
         }
     }
 
-    // Modal Handlers
+/* ============================================================
+   6. Modal Management
+   ------------------------------------------------------------
+   - Generic open/close helpers
+   - CSS handles visibility via .active
+   ============================================================ */
     function openModal(modalId) {
         document.getElementById(modalId).classList.add('active');
     }
@@ -76,7 +128,13 @@ const MindCare = (() => {
     }
 
 
-    // --- Chat Functions ---
+/* ============================================================
+   7. AI Chat (Simulated)
+   ------------------------------------------------------------
+   - No backend or API calls
+   - Responses randomly selected
+   - Messages injected into DOM
+   ============================================================ */
     function sendMessage() {
         const messageText = chatInput.value.trim();
         if (messageText === '') return;
@@ -109,7 +167,12 @@ const MindCare = (() => {
     }
 
 
-    // --- Mood Tracker Functions ---
+/* ============================================================
+   8. Mood Tracker
+   ------------------------------------------------------------
+   - Visual feedback only
+   - No persistence (resets on refresh)
+   ============================================================ */
     function selectMood(moodButton, mood) {
         document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected'));
         moodButton.classList.add('selected');
@@ -121,7 +184,12 @@ const MindCare = (() => {
     }
 
 
-    // --- History Filter Function ---
+/* ============================================================
+   9. History Filtering
+   ------------------------------------------------------------
+   - Client-side only
+   - Uses data-category attributes
+   ============================================================ */
     function filterHistory(category, button) {
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
@@ -137,7 +205,12 @@ const MindCare = (() => {
     }
 
 
-    // --- Breathing Exercise Functions ---
+/* ============================================================
+   10. Guided Breathing Exercise
+   ------------------------------------------------------------
+   - JS text updates synced with CSS animation timing
+   - Changing animation duration requires JS update
+   ============================================================ */
     const breathingText = document.getElementById('breathingText');
     const breathingInstruction = document.getElementById('breathingInstruction');
 
@@ -170,9 +243,13 @@ const MindCare = (() => {
     }
 
 
-    // --- Profile Functions ---
+/* ============================================================
+   11. Profile Editing
+   ------------------------------------------------------------
+   - Inline editing using input replacement
+   - Values persisted to localStorage
+   ============================================================ */
     function toggleEdit(elementId) {
-        // FIX 1: Corrected string concatenation in element ID for container
         const container = document.getElementById(elementId + '-container'); 
         const element = document.getElementById(elementId);
         const currentValue = element.textContent;
@@ -188,7 +265,6 @@ const MindCare = (() => {
             
             const saveAndRevert = () => {
                 const newValue = input.value.trim();
-                // FIX 2: Corrected string literal for status editing
                 const textValue = (elementId === 'profile-status' && newValue) ? `"${newValue}"` : newValue; 
 
                 const newSpan = document.createElement('span');
@@ -207,7 +283,6 @@ const MindCare = (() => {
                 container.parentNode.insertBefore(editIcon, container.nextElementSibling);
 
                 // Save to localStorage
-                // FIX 3: Corrected string concatenation for localStorage key
                 localStorage.setItem('userProfile_' + elementId, newSpan.textContent); 
                 
                 // Update dashboard name if changed
@@ -240,7 +315,13 @@ const MindCare = (() => {
         closeModal('avatarModal');
     }
 
-    // Wellness Goals Logic
+    /* ============================================================
+   12. Wellness Goals (Profile)
+   ------------------------------------------------------------
+   - CRUD operations on goals
+   - Stored in localStorage
+   ============================================================ */
+
     function addGoal() {
         const goalText = newGoalInput.value.trim();
         if (goalText === '') return;
@@ -296,7 +377,12 @@ const MindCare = (() => {
     }
 
 
-    // --- Dashboard Functions ---
+/* ============================================================
+   13. Dashboard Dynamic Content
+   ------------------------------------------------------------
+   - Greeting based on time of day
+   - Daily quote & journal prompt rotation
+   ============================================================ */
     function updateDashboardGreetingAndQuote() {
         // Dynamic Greeting
         const greetingEl = document.getElementById('dynamic-greeting');
@@ -311,7 +397,6 @@ const MindCare = (() => {
         } else {
             greeting = 'Good Evening, ';
         }
-        // FIX 4: Corrected use of template literal for greetingEl.innerHTML
         greetingEl.innerHTML = `${greeting} ${usernameSpan} 👋`; 
 
         // Daily Quote
@@ -319,7 +404,6 @@ const MindCare = (() => {
             "The secret of getting ahead is getting started.", "Your limitation—it's only your imagination.", "The best way to get started is to quit talking and begin doing.", "It's not whether you get knocked down, it's whether you get up.", "The only person you are destined to become is the person you decide to be.", "Believe you can and you're halfway there.", "You are never too old to set another goal or to dream a new dream.", "Act as if what you do makes a difference. It does.", "Success is not final, failure is not fatal: it is the courage to continue that counts.", "The journey of a thousand miles begins with a single step."
         ];
         const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
-        // FIX 5: Corrected use of template literal for daily-quote.textContent
         document.getElementById('daily-quote').textContent = `"${quotes[dayOfYear % quotes.length]}"`; 
         
         // Journal Prompt
@@ -328,6 +412,7 @@ const MindCare = (() => {
         ];
         document.getElementById('journal-prompt').textContent = prompts[dayOfYear % prompts.length];
     }
+// Mini preview of today's wellness plan (dashboard only)
 
     function populateDashboardPlan() {
         const planContentEl = document.getElementById('dashboard-plan-content');
@@ -369,7 +454,13 @@ const MindCare = (() => {
     }
 
 
-    // --- Daily Plan (Workout) Functions ---
+/* ============================================================
+   14. Daily Wellness Plan Engine
+   ------------------------------------------------------------
+   - Generates day buttons & task lists dynamically
+   - Completion state persisted in localStorage
+   - Powers both Plan page & Dashboard preview
+   ============================================================ */
     function generatePlanHTML() {
         completionStatus = JSON.parse(localStorage.getItem('wellnessPlanStatus')) || {};
 
@@ -388,7 +479,6 @@ const MindCare = (() => {
 
             // Create day plan content
             const dayPlanDiv = document.createElement('div');
-            // FIX 6: Corrected string concatenation in element ID for dayPlanDiv
             dayPlanDiv.id = 'plan-' + day; 
             dayPlanDiv.className = 'day-plan';
             
@@ -431,7 +521,6 @@ const MindCare = (() => {
         const totalTasks = planData[day].tasks.length;
         const percentage = totalTasks > 0 ? (completedCount / totalTasks) * 100 : 0;
 
-        // FIX 7 & 8: Corrected string concatenation/template literal for element IDs and content
         document.getElementById('progress-fill-' + day).style.width = percentage + '%'; 
         document.getElementById('progress-text-' + day).textContent = completedCount + ' / ' + totalTasks + ' Completed'; 
     }
@@ -455,6 +544,7 @@ const MindCare = (() => {
             saveStatus();
         }
     }
+// Toggle visible day plan
 
     function switchDay(day) {
         document.querySelectorAll('.day-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.day === day));
@@ -462,8 +552,13 @@ const MindCare = (() => {
         document.querySelectorAll('.day-plan').forEach(plan => plan.classList.toggle('active', plan.id === 'plan-' + day)); 
     }
     
-    // --- Settings and Theme Functions ---
-    // Function to apply the theme based on localStorage
+    /* ============================================================
+   15. Theme & Settings
+   ------------------------------------------------------------
+   - Dark mode persisted via localStorage
+   - Other toggles are UI-only for now
+   ============================================================ */
+
     function applyInitialTheme() {
         const isDarkMode = localStorage.getItem('theme') === 'dark';
         if (isDarkMode) {
@@ -490,7 +585,12 @@ const MindCare = (() => {
     }
 
 
-    // --- Initialization on DOM Load ---
+/* ============================================================
+   16. Application Bootstrap
+   ------------------------------------------------------------
+   - Runs once on page load
+   - Initializes all features safely
+   ============================================================ */
     document.addEventListener('DOMContentLoaded', () => {
         // Apply saved theme early
         applyInitialTheme();
@@ -548,7 +648,12 @@ const MindCare = (() => {
         populateDashboardPlan();
     });
 
-    // Public API
+/* ============================================================
+   17. Public API
+   ------------------------------------------------------------
+   - Functions exposed for inline HTML handlers
+   - Everything else remains private
+   ============================================================ */
     return {
         showPage,
         sendMessage,
